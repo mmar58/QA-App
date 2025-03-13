@@ -1,5 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar,IonButton } from '@ionic/react';
 import './Home.css';
 
 const Home: React.FC = () => {
@@ -7,17 +6,18 @@ const Home: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Blank</IonTitle>
+          <IonTitle>QA App - by <a href='https://github.com/mmar58'>mmar58</a></IonTitle>
+          
         </IonToolbar>
+        <IonTitle>Homepage</IonTitle>
       </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Blank</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <ExploreContainer />
-      </IonContent>
+      <IonContent className="flex items-center justify-center h-full" fullscreen>
+                <div className="flex flex-col space-y-4">
+                    <IonButton className='homeButton' expand="block" routerLink="/addquiz">Add Question</IonButton>
+                    <IonButton className='homeButton' expand="block" routerLink="/page2">Take Quiz</IonButton>
+                    <IonButton className='homeButton' expand="block" routerLink="/page3">Take Custom Quiz</IonButton>
+                </div>
+            </IonContent>
     </IonPage>
   );
 };

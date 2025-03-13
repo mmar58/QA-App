@@ -1,0 +1,8 @@
+/* Add this CSS to your global or component-specific styles */
+/* custom-modal styles */
+ion-toast::part(message) {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+  
