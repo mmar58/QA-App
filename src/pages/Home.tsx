@@ -15,7 +15,7 @@ const Home: React.FC = () => {
                 <div className="flex flex-col space-y-4">
                     <IonButton className='homeButton' expand="block" routerLink="/addquiz">Add Question</IonButton>
                     <IonButton className='homeButton' expand="block" routerLink="/quiz">Take Quiz</IonButton>
-                    <IonButton className='homeButton' expand="block" routerLink="/page3">Take Custom Quiz</IonButton>
+                    {/* <IonButton className='homeButton' expand="block" routerLink="/page3">Update Data</IonButton> */}
                 </div>
             </IonContent>
     </IonPage>

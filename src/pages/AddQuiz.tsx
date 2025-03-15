@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { IonButton, IonInput, IonItem, IonLabel, IonPage, IonContent, IonCheckbox, IonModal } from '@ionic/react';
+import { IonButton, IonInput, IonItem, IonLabel, IonPage, IonContent, IonCheckbox, IonModal, IonHeader, IonToolbar, IonBackButton, IonButtons, IonTitle } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import storage from '../storage';
 import { mainDataKey, sectionsKey} from '../keys';
@@ -122,6 +122,15 @@ const AddQuiz: React.FC = () => {
 
     return (
         <IonPage>
+            {/* 🏆 Back Button in Header */}
+                        <IonHeader>
+                            <IonToolbar>
+                                <IonButtons slot="start">
+                                    <IonBackButton defaultHref="/" />
+                                </IonButtons>
+                                <IonTitle>Quiz</IonTitle>
+                            </IonToolbar>
+                        </IonHeader>
             <IonContent className="p-4">
                 <IonItem button onClick={() => setShowModal(true)}>
                     <IonLabel>{selectedSection ? sections.find(sec => sec.id === selectedSection)?.name : "Select a section"}</IonLabel>
