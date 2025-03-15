@@ -12,3 +12,8 @@ export interface SectionData{
     sections:Section[],
     lastSection:string
 }
+export interface Question {
+    question:string,
+    options:string[],
+    correctAnswer:number
+}

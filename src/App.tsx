@@ -33,6 +33,8 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 import AddQuiz from './pages/AddQuiz';
+import Quiz from './pages/Quiz';
+
 
 setupIonicReact();
 
@@ -48,6 +50,9 @@ const App: React.FC = () => (
         </Route>
         <Route path="/addquiz">
           <AddQuiz/>
+        </Route>
+        <Route path="/quiz">
+          <Quiz/>
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>

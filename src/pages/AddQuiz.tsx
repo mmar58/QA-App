@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import storage from '../storage';
 import { mainDataKey, sectionsKey} from '../keys';
 import PopupNotice, { PopupNoticeRef } from '../components/PopupNotice';
-import type {Section,SectionData} from '../types'
+import type {Question, Section,SectionData} from '../types'
 
 
 
@@ -25,6 +25,7 @@ const AddQuiz: React.FC = () => {
     let curSection:SectionData;
     const loadSections= async () => {
         curSection=await storage.get(sectionsKey);
+        console.log(curSection);
         if(curSection){
             setSections(curSection.sections);
             setSelectedSection(curSection.lastSection);
@@ -37,9 +38,33 @@ const AddQuiz: React.FC = () => {
         }
     }
 
+    const loadSectionAndSaveIt=async(lastSection:string)=>{
+        curSection=await storage.get(sectionsKey);
+        if(curSection){
+            curSection.lastSection=lastSection;
+            storage.set(sectionsKey,curSection);
+        }
+    }
+
     useEffect(() => {
         loadSections(); // Load sections when the component mounts
     },[])
+
+    useEffect(() => {
+        // If cursection loaded
+        if(curSection){
+            curSection.lastSection=selectedSection;
+            storage.set(sectionsKey,curSection);
+        }
+        // If cursection not loaded
+        else{
+            loadSectionAndSaveIt(selectedSection);
+        }
+    }
+    ,
+    [selectedSection]
+    );
+
 
 
     const handleOptionChange = (index: number, value: string) => {
@@ -48,15 +73,28 @@ const AddQuiz: React.FC = () => {
         setOptions(newOptions);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async() => {
         if (!question.trim() || options.some(opt => opt.trim() === '') || correctAnswer === null) {
             popupRef.current?.showNotice('Please fill in all fields and select a correct answer.', 'warning');
             return;
         }
 
-        const quizData = { question, options, correctAnswer, section: selectedSection };
-        console.log('Quiz Data:', quizData);
+        const quizData:Question = { question, options, correctAnswer};
+        popupRef.current?.showNotice('Saving question data!', 'general');
+        // Loaing section questions
+        let questions:Question[] = await storage.get(selectedSection+"_Q");
+        if(questions){
+            questions.push(quizData);
+            await storage.set(selectedSection+"_Q",questions);
+        }
+        else{
+            await storage.set(selectedSection+"_Q",[quizData]);
+        }
         popupRef.current?.showNotice('Quiz submitted successfully!', 'success');
+        // Clear the form fields
+        setQuestion('');
+        setOptions(['', '', '', '']);
+        setCorrectAnswer(null);
     };
 
     const handleCancel = () => {
