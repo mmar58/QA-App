@@ -2,6 +2,7 @@
 import { Storage } from '@ionic/storage';
 
 const storage = new Storage();
-await storage.create();
+
+storage.create(); // Create the storage if it doesn't exist
 
 export default storage;
