@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { IonPage, IonContent, IonButton, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton } from '@ionic/react';
+import React, { useEffect, useState, useRef, createContext, useContext } from 'react';
+import { IonPage, IonContent, IonButton, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonInput, IonLabel } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import storage from '../storage';
 import { sectionsKey } from '../keys';
@@ -12,9 +12,11 @@ import Pagination from '../components/Quiz/Pagination';
 
 const QUESTIONS_PER_PAGE = 3;
 
-const Quiz: React.FC = () => {
-    const history = useHistory(); // For manual navigation
+// Creating Context for Global Quiz State
+const QuizContext = createContext(null);
+const useQuiz = () => useContext(QuizContext);
 
+const QuizProvider = ({ children }) => {
     const [sections, setSections] = useState<Section[]>([]);
     const [selectedSections, setSelectedSections] = useState<string[]>([]);
     const [numQuestions, setNumQuestions] = useState<number>(5);
@@ -70,13 +72,44 @@ const Quiz: React.FC = () => {
         setQuizStarted(false);
     };
 
+    return (
+        <QuizContext.Provider value={{
+            sections, selectedSections, setSelectedSections,
+            numQuestions, setNumQuestions, timeLimit, setTimeLimit,
+            quizStarted, setQuizStarted, quizFinished, setQuizFinished,
+            quizQuestions, currentPage, setCurrentPage,
+            selectedAnswers, setSelectedAnswers, score, handleSubmitQuiz,
+            startQuiz, timerRef
+        }}>
+            {children}
+        </QuizContext.Provider>
+    );
+};
+
+const Quiz: React.FC = () => {
+    return (
+        <QuizProvider>
+            <QuizContent />
+        </QuizProvider>
+    );
+};
+
+const QuizContent: React.FC = () => {
+    const {
+        sections, selectedSections, setSelectedSections,
+        numQuestions, setNumQuestions, timeLimit, setTimeLimit,
+        quizStarted, setQuizStarted, quizFinished, setQuizFinished,
+        quizQuestions, currentPage, setCurrentPage,
+        selectedAnswers, setSelectedAnswers, score, handleSubmitQuiz,
+        startQuiz, timerRef
+    } = useQuiz();
+
     const totalPages = Math.ceil(quizQuestions.length / QUESTIONS_PER_PAGE);
     const startIndex = currentPage * QUESTIONS_PER_PAGE;
     const paginatedQuestions = quizQuestions.slice(startIndex, startIndex + QUESTIONS_PER_PAGE);
 
     return (
         <IonPage>
-            {/* 🏆 Back Button in Header */}
             <IonHeader>
                 <IonToolbar>
                     <IonButtons slot="start">
@@ -92,6 +125,12 @@ const Quiz: React.FC = () => {
                         <h2>Select Sections</h2>
                         <SectionSelector sections={sections} selectedSections={selectedSections} setSelectedSections={setSelectedSections} />
 
+                        <IonLabel>Number of Questions</IonLabel>
+                        <IonInput type="number" value={numQuestions} onIonChange={(e) => setNumQuestions(parseInt(e.detail.value, 10) || 5)} />
+
+                        <IonLabel>Quiz Duration (seconds)</IonLabel>
+                        <IonInput type="number" value={timeLimit} onIonChange={(e) => setTimeLimit(parseInt(e.detail.value, 10) || 60)} />
+
                         <IonButton expand="block" onClick={startQuiz}>START QUIZ</IonButton>
                     </>
                 ) : quizStarted ? (
@@ -100,6 +139,7 @@ const Quiz: React.FC = () => {
                         {paginatedQuestions.map((q, idx) => (
                             <QuizQuestion key={idx} question={q} index={startIndex + idx} selectedAnswers={selectedAnswers} setSelectedAnswers={setSelectedAnswers} />
                         ))}
+                        <p style={{ textAlign: 'center' }}>Page {currentPage + 1} of {totalPages}</p>
                         <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
                         <IonButton expand="block" style={{ marginTop: '20px' }} onClick={handleSubmitQuiz}>Submit Quiz</IonButton>
                     </>
