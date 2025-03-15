@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">QA App</string>
     <string name="title_activity_main">QA App</string>
-    <string name="package_name">io.ionic.starter</string>
-    <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="package_name">com.mmar.qaapp</string>
+    <string name="custom_url_scheme">com.mmar.qaapp</string>
 </resources>
